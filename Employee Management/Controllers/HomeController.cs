@@ -55,16 +55,19 @@ namespace Employee_Management.Controllers
                 employee.Name = model.Name;
                 employee.Email = model.Email;
                 employee.Department = model.Department;
-                string uniquefilename = ProceessUploadedFile(model);
-                Employee newEmployee = new Employee
+                if (model.Photo != null)
                 {
-                    Name = model.Name,
-                    Email = model.Email,
-                    Department = model.Department,
-                    Photopath = uniquefilename
-                };
-                _employeeRepository.Add(newEmployee);
-                return RedirectToAction("details", new { id = newEmployee.Id });
+                  if  (model.ExistingPhotoPath!=null)
+                    {
+                       string filepath= Path.Combine(hostingEnvironment.WebRootPath, "images", model.ExistingPhotoPath);//find file path
+                        System.IO.File.Delete(filepath);//delete file
+                    }
+
+                    employee.Photopath = ProceessUploadedFile(model);
+                }
+               
+                _employeeRepository.Update(employee);
+                return RedirectToAction("index");
             }
             return View();
         }
@@ -77,7 +80,11 @@ namespace Employee_Management.Controllers
                 string UploadsFolder = Path.Combine(hostingEnvironment.WebRootPath + "\\images");
                 uniquefilename = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
                 string filepath = Path.Combine(UploadsFolder, uniquefilename);
-                model.Photo.CopyTo(new FileStream(filepath, FileMode.Create));
+                using(var filestream= new FileStream(filepath, FileMode.Create))
+                    {
+                    model.Photo.CopyTo(filestream);
+
+                }
             }
 
             return uniquefilename;
@@ -103,9 +110,15 @@ namespace Employee_Management.Controllers
         }
         public ViewResult Details(int? id)
         {
+            Employee employee = _employeeRepository.GetEmployee(id.Value);
+            if (employee==null)
+            {
+                Response.StatusCode = 404;
+                return View("EmployeeNotFound",id.Value);
+            }
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
             {
-                Employee = _employeeRepository.GetEmployee(id??1),
+                Employee = employee,
                 PageTitle = "Employee Details"
 
             };
