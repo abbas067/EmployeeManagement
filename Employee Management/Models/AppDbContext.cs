@@ -17,7 +17,7 @@ namespace Employee_Management.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Seed();
+            modelBuilder.Seed(); 
         }
     }
 }
