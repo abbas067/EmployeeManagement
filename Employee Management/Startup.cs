@@ -30,6 +30,14 @@ namespace Employee_Management
            services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(_config.GetConnectionString("EmployeeDbConnection")));
             services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            // configuring password rules using password options 
+            services.Configure<IdentityOptions>(options=>
+                {
+                    options.Password.RequiredLength = 10;
+                    //overrides password required length from 6 to 10
+                    options.Password.RequiredUniqueChars = 3;
+                    //overrides required unique chars to 3 from 1.
+            });
             services.AddMvc().AddXmlSerializerFormatters();
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
         }
