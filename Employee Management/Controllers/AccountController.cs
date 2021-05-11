@@ -1,4 +1,5 @@
 ﻿using Employee_Management.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -30,7 +31,22 @@ namespace Employee_Management.Controllers
         {
             return View();
         }
-        [HttpPost]
+        //[HttpGet][HttpPost]
+        [AcceptVerbs("Get","Post")]
+        [AllowAnonymous]
+        public async Task<IActionResult> IsEmailInUse(string email)
+        {
+          var user=await  userManager.FindByEmailAsync(email);
+            if(user==null)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"emali {email} is already in used");
+            }    
+        }
+            [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
