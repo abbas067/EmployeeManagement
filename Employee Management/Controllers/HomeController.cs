@@ -5,11 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Employee_Management.Models;
 using Employee_Management.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Employee_Management.Controllers
 {
+   [Authorize]
     public class HomeController : Controller
     {
         private IEmployeeRepository _employeeRepository;
@@ -20,7 +22,7 @@ namespace Employee_Management.Controllers
             _employeeRepository = employeeRepository;
             this.hostingEnvironment = hostingEnvironment;
         }
-
+        [AllowAnonymous]
         public ViewResult Index()
         {
             var model =_employeeRepository.GetAllEmployee();
@@ -108,6 +110,7 @@ namespace Employee_Management.Controllers
             }
             return View();
         }
+        [AllowAnonymous]
         public ViewResult Details(int? id)
         {
             Employee employee = _employeeRepository.GetEmployee(id.Value);
