@@ -29,7 +29,7 @@ namespace Employee_Management
         {
            services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(_config.GetConnectionString("EmployeeDbConnection")));
-            services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
             // configuring password rules using password options 
             services.Configure<IdentityOptions>(options=>
                 {
