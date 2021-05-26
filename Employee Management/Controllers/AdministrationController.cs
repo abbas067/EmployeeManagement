@@ -69,7 +69,7 @@ namespace Employee_Management.Controllers
                     Id = role.Id,
                     RoleName=role.Name
                 };
-                foreach(var user in userManager.Users)
+                foreach(var user in userManager.Users.ToList())
                 {
                     if(await userManager.IsInRoleAsync(user,role.Name))
                     {
@@ -79,7 +79,34 @@ namespace Employee_Management.Controllers
                 return View(model);
 
             }
-         
-        
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditRole(EditRoleViewModel model)
+        {
+            var role = await roleManager.FindByIdAsync(model.Id);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with id={model.Id} can not be found";
+                return View("NotFound");
+            }
+            else
+            {
+                role.Name = model.RoleName;
+                var result = await roleManager.UpdateAsync(role);
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("ListRoles");
+                        }
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError("",error.Description);
+                }
+            }
+            
+            return View(model);
+
+        }
+
     }
 }
