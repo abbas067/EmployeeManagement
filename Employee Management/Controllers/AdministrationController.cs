@@ -20,10 +20,20 @@ namespace Employee_Management.Controllers
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
+      
+       }
+      // method tha returns list of users.
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            var users = userManager.Users;
+            return View(users);
+            return View();
         }
         [HttpGet]
         public IActionResult CreateRole()
         {
+            
             return View();
         }
         [HttpPost]
