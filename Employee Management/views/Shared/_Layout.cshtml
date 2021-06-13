@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <a class="navbar-brand" asp-action="index" asp-controller="home" ><img src="~/images/brand.jpg" height="30" width="30"></a>
+            <a class="navbar-brand" asp-action="index" asp-controller="home"><img src="~/images/brand.jpg" height="30" width="30"></a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#collapsiblenavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -26,17 +26,17 @@
                     <li class="nav-item"><a asp-action="create" asp-controller="home" class="nav-link">Create</a></li>
                     @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbardropdownmenulink" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">Manage </a>
-                    <div class="dropdown-menu" aria-labelledby="navbardropdownmenulink">
-                        <a class="dropdown-item" asp-controller="administration" asp-action="ListUsers">Users</a>
-                        <a class="dropdown-item" asp-controller="administration" asp-action="ListRoles">Roles</a>
-                    </div>
-                </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardropdownmenulink" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">Manage </a>
+                            <div class="dropdown-menu" aria-labelledby="navbardropdownmenulink">
+                                <a class="dropdown-item" asp-controller="administration" asp-action="ListUsers">Users</a>
+                                <a class="dropdown-item" asp-controller="administration" asp-action="ListRoles">Roles</a>
+                            </div>
+                        </li>
                     }
                 </ul>
-               
+
                 <ul class="navbar-nav ml-auto">
                     @if (signInManager.IsSignedIn(User))
                     {
@@ -64,8 +64,14 @@
     </div>
     @if (IsSectionDefined("Scripts"))
     {
-    @RenderSection("Scripts", required: true)
+        @RenderSection("Scripts", required: true)
     }
+    @using Microsoft.AspNetCore.Mvc.Localization
+    @inject IViewLocalizer Localizer
+    
+    <li class="nav-item float-right">
+        @await Html.PartialAsync("_SelectLanguagePartial")
+    </li>
 </body>
 </html>
 

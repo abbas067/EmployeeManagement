@@ -22,7 +22,7 @@ namespace Employee_Management.Controllers
             this.userManager = userManager;
       
        }
-      // method tha returns list of users.
+      // method that returns list of users.
         [HttpGet]
         public IActionResult ListUsers()
         {
@@ -30,6 +30,61 @@ namespace Employee_Management.Controllers
             return View(users);
             return View();
         }
+        // method to edit  user.
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id={id} can not be found";
+                return View("NotFound");
+            }
+            var userCalims = await userManager.GetClaimsAsync(user);
+            var userRoles = await userManager.GetRolesAsync(user);
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                City = user.city,
+                Claims = userCalims.Select(c => c.Value).ToList(),
+                Roles=userRoles
+            };
+          
+            return View(model);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id={model.Id} can not be found";
+                return View("NotFound");
+            }
+            else
+            {
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.city = model.City;
+                var result = await userManager.UpdateAsync(user);
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("ListUsers");
+                }
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+            }
+          
+            return View(model);
+
+        }
+
         [HttpGet]
         public IActionResult CreateRole()
         {

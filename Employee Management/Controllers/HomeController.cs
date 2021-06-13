@@ -7,20 +7,27 @@ using Employee_Management.Models;
 using Employee_Management.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace Employee_Management.Controllers
 {
    [Authorize]
     public class HomeController : Controller
     {
+
         private IEmployeeRepository _employeeRepository;
         private readonly IWebHostEnvironment hostingEnvironment;
+        private readonly IStringLocalizer<HomeController> _localizer;
 
-        public HomeController(IEmployeeRepository employeeRepository,IWebHostEnvironment hostingEnvironment)
+        public HomeController(IEmployeeRepository employeeRepository,IWebHostEnvironment hostingEnvironment, IStringLocalizer<HomeController> localizer)
         {
             _employeeRepository = employeeRepository;
             this.hostingEnvironment = hostingEnvironment;
+            _localizer = localizer;
+
         }
         [AllowAnonymous]
         public ViewResult Index()
@@ -127,6 +134,17 @@ namespace Employee_Management.Controllers
             };
             return View(homeDetailsViewModel);
         }
-      
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return LocalRedirect(returnUrl);
+        }
+
     }
 }

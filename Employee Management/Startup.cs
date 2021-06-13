@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Employee_Management.Models;
@@ -7,10 +8,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Employee_Management
 {
@@ -40,6 +44,36 @@ namespace Employee_Management
             });
             services.AddMvc().AddXmlSerializerFormatters();
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
+            //Localization code start
+            services.AddControllersWithViews();
+            services.AddLocalization(opt =>
+            {
+                opt.ResourcesPath = "Resources";
+            });
+            services.Configure<RequestLocalizationOptions>(
+          opts =>
+          {
+              var supportedCultures = new List<CultureInfo>
+              {     new CultureInfo("en-US"),
+                    new CultureInfo("en-GB"),//UK English
+                    new CultureInfo("zh-CN"),//Simplified Chinese
+                    new CultureInfo("es-US"),//Latin American Spanish
+                    new CultureInfo("fi-FI"),//Finnish
+                    new CultureInfo("fr-CA"),//Canadian French
+                    new CultureInfo("nl-BE"),//Dutch
+                    new CultureInfo("pl"),//Polish
+                    new CultureInfo("pt-BR"),//Brazilian Portuguese
+                    new CultureInfo("sv-SE")//Swedish
+              };
+
+              opts.DefaultRequestCulture = new RequestCulture("en-US");
+              // Formatting numbers, dates, etc.
+              opts.SupportedCultures = supportedCultures;
+              // UI strings that we have localized.
+              opts.SupportedUICultures = supportedCultures;
+          });
+            services.AddMvc().AddViewLocalization();// to register localization
+            //Localization code end   
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +90,11 @@ namespace Employee_Management
             {
                 app.UseStatusCodePagesWithRedirects("/Error/{0}");
             }
+            //localization
+
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options.Value);
+            //localization ends
             app.UseStaticFiles();
             app.UseAuthentication();
 
