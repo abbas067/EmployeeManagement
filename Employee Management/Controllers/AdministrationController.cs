@@ -22,8 +22,33 @@ namespace Employee_Management.Controllers
             this.userManager = userManager;
       
        }
-      // method that returns list of users.
-        [HttpGet]
+        // method to delete user
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id={id} can not be found";
+                return View("NotFound");
+            }
+            else
+            {
+               var result=await userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ListUsers");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View("ListUsers");
+
+        }
+
+            // method that returns list of users.
+            [HttpGet]
         public IActionResult ListUsers()
         {
             var users = userManager.Users;
