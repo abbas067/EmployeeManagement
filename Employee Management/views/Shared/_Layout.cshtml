@@ -58,7 +58,6 @@
                 </ul>
             </div>
         </nav>
-    </div>
     <div class="container">
         @RenderBody()
     </div>
@@ -66,12 +65,7 @@
     {
         @RenderSection("Scripts", required: true)
     }
-    @using Microsoft.AspNetCore.Mvc.Localization
-    @inject IViewLocalizer Localizer
-    
-    <li class="nav-item float-right">
-        @await Html.PartialAsync("_SelectLanguagePartial")
-    </li>
+   </div>
 </body>
 </html>
 
