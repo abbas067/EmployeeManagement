@@ -22,6 +22,66 @@ namespace Employee_Management.Controllers
             this.userManager = userManager;
       
        }
+        // method to manage roles
+        [HttpGet]
+        public async Task<IActionResult> ManageUserRoles(string userId)
+        {
+            ViewBag.userId = userId;
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id={userId} can not be found";
+                return View("NotFound");
+            }
+            var model = new List<UserRolesViewModel>();
+            foreach(var role in roleManager.Roles.ToList())
+            {
+                var userRoleViewModel = new UserRolesViewModel
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name
+
+                };
+                if(await userManager.IsInRoleAsync(user,role.Name))
+                {
+                    userRoleViewModel.IsSelected = true;
+                }
+                else
+                {
+                    userRoleViewModel.IsSelected = false;
+
+                }
+                model.Add(userRoleViewModel);
+            }
+            return View(model);
+
+        }
+        // method to handle post request of manageuserrole
+        [HttpPost]
+        public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel>model,string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id={userId} can not be found";
+                return View("NotFound");
+            }
+            var roles = await userManager.GetRolesAsync(user);
+            var result = await userManager.RemoveFromRolesAsync(user,roles);
+            if(!result.Succeeded)
+            {
+                ModelState.AddModelError(" ", "Cannot remove user existing role");
+                return View(model);
+            }
+            result = await userManager.AddToRolesAsync(user,model.Where(x=>x.IsSelected).Select(y=>y.RoleName));
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(" ", "Cannot add user to selected role");
+                return View(model);
+            }
+            return RedirectToAction("Edituser", new { id=userId});
+        }
+
         // method to delete user
         public async Task<IActionResult> DeleteUser(string id)
         {
