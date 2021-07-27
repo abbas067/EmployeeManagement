@@ -74,6 +74,11 @@ namespace Employee_Management
           });
             services.AddMvc().AddViewLocalization();// to register localization
             //Localization code end   
+            // adding claim based authorization
+            services.AddAuthorization(Options =>
+                {
+                    Options.AddPolicy("DeleteRolePolicy", policy => policy.RequireClaim("DeleteClaim"));
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
