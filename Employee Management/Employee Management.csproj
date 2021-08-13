@@ -7,12 +7,6 @@
     <RootNamespace>Employee_Management</RootNamespace>
     
 	  <UserSecretsId>0e1023ff-eee8-4f2a-be83-ea4bb5f47e69</UserSecretsId>
-    
-	  <StartupObject>Employee_Management.Program</StartupObject>
-    
-	  <ApplicationIcon />
-    
-	  <OutputType>WinExe</OutputType>
 
   </PropertyGroup>
 
@@ -21,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.6">

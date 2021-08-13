@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+
 namespace Employee_Management
 {
     public class Startup
@@ -78,14 +79,6 @@ namespace Employee_Management
                 {
                     Options.AddPolicy("DeleteRolePolicy", policy => policy.RequireClaim("DeleteClaim"));
                 });
-            // added external login provider google
-            services.AddAuthentication().AddGoogle(
-                Options =>
-                {
-                    Options.ClientId = "235553987769-due6ua43i96rnfe063ls708apf2t2ktb.apps.googleusercontent.com";
-                    Options.ClientSecret = "PTUKomK62DPbJg7PjqsarJHT";
-                }
-                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
