@@ -84,8 +84,16 @@ namespace Employee_Management
                 {
                     Options.ClientId = "235553987769-due6ua43i96rnfe063ls708apf2t2ktb.apps.googleusercontent.com";
                     Options.ClientSecret = "PTUKomK62DPbJg7PjqsarJHT";
-                }
-                );
+                })
+                .AddFacebook(
+                Options =>
+                {
+                    Options.ClientId = "165942808977079";
+                    Options.ClientSecret = "cdcab9a44795141d38f3be949e4e932e";
+                })
+
+                ;
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
