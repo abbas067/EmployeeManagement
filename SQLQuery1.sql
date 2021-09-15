@@ -1,0 +1,1 @@
+﻿alter table dbo.aspnetusers add city varchar(30);

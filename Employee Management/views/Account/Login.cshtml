@@ -46,7 +46,7 @@
              <form method="post"asp-controller="account" asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl">
                 @foreach (var provider in Model.ExternalLogins)
                 {
-                 <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Login using Your @provider.DisplayName account"
+                 <button type="submit" class="btn btn-primary" style="width:auto" name="provider" value="@provider.Name" title="Login using Your @provider.DisplayName account"
                          >@provider.DisplayName </button>
 
                 }

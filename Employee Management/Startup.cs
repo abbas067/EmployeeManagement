@@ -88,8 +88,8 @@ namespace Employee_Management
                 .AddFacebook(
                 Options =>
                 {
-                    Options.ClientId = "165942808977079";
-                    Options.ClientSecret = "cdcab9a44795141d38f3be949e4e932e";
+                    Options.ClientId = "376783153835811";
+                    Options.ClientSecret = "a745168c08ddc222290cdcbe9deb3486";
                 })
 
                 ;

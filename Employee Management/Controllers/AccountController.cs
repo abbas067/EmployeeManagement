@@ -42,6 +42,7 @@ namespace Employee_Management.Controllers
           var user=await  userManager.FindByEmailAsync(email);
             if(user==null)
             {
+                double i = 10;
                 return Json(true);
             }
             else
@@ -60,14 +61,22 @@ namespace Employee_Management.Controllers
                     var result = await userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        if(signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        //generate email confirmation token
+                        var token = await userManager.CreateAsync(user, model.Password);
+                        //generate email confirmation link
+                        var confimationLink = Url.Action("ConfirmEmail", "Account",
+                            new { useId = user.Id, otken = token }, Request.Scheme);
+                        //request scheme may be http or https
+                        if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                             {
                             return RedirectToAction("ListUsers", "Administation");
 
                         }
 
-                        await signInManager.SignInAsync(user,isPersistent:false);
-                        return RedirectToAction("Index","home");
+                        ViewBag.ErrorTitle = "Registration Successful";
+                        ViewBag.ErrorMessage = "Before you can login, please confirm your" + "email by clicking the confimation link we have mailed you.";
+                        //await signInManager.SignInAsync(user,isPersistent:false);
+                        //return RedirectToAction("Index","home");
                     }
                     foreach(var error in result.Errors)
                     {
@@ -80,6 +89,28 @@ namespace Employee_Management.Controllers
             }
             
             return View(model);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId,string token)
+        {
+            if(userId==null || token==null)
+            {
+                return RedirectToAction("index","home");
+            }
+            var user =await userManager.FindByIdAsync(userId);
+            if(user==null)
+            {
+                ViewBag.ErrorMessage = $" the userid {userId} is invalid";
+                return View("Not Found");
+            }
+            var result=await userManager.ConfirmEmailAsync(user, token);
+            if(result.Succeeded)
+            {
+                return View();
+            }
+            ViewBag.ErrorTitle = "Email cnnot be confirmed";
+            return View("Error");
         }
         // Login action that respons to get request
         [HttpGet]
